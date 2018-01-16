@@ -9,6 +9,10 @@ app.get('/test', (req, res, next) => {
     res.send("testing testing")
 })
 
+app.get('/', (req, res, next) => {
+    res.sendFile(__dirname + "/index.html")
+})
+
 app.get('/JSON/:searchTerm', (req, res, next) => {
 
     db.serialize( () => {
@@ -18,6 +22,7 @@ app.get('/JSON/:searchTerm', (req, res, next) => {
         })
     })
 })
+app.use(express.static('public'))
 
 var server = app.listen(3000, () => {
     var host = server.address().address;

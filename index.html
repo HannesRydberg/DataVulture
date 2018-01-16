@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>Data Vulture</title>
+        <link href="style.css" rel="stylesheet">
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous">
+        </script>
+    </head>
+    <body>
+        <h1>
+            Data Vulture
+        </h1>
+        <p>
+            Some sample text, lorem ipsum dolor si amet etc...
+        </p>
+        <div id="map">
+
+        </div>
+        <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBE4wTf6D4qCmR9V2TskDRSA04FVGt4T4w&libraries=visualization&callback=initMap">
+        </script>
+        <script>
+                var map;
+                var initMap = () => {
+                    map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 2,
+                    center: new google.maps.LatLng(2.8,-187.3),
+                    mapTypeId: 'terrain'
+                    })
+
+                    var heatmapData = []
+                    var json;
+                    $.get("http://localhost:3000/JSON/Trump", (data) => {
+                        json = JSON.parse(data)
+                        $.each(json, (index, tweet) => {
+                            //console.log(tweet.longitude, ",", tweet.latitude)
+                            var latLng = new google.maps.LatLng(tweet.latitude, tweet.longitude)
+                            heatmapData.push(latLng)
+                        })
+                        var heatmap = new google.maps.visualization.HeatmapLayer({
+                            data: heatmapData,
+                            dissipating: false,
+                            map: map
+                        })
+                    })
+            
+
+                }
+            </script>
+    </body>    
+</html>
