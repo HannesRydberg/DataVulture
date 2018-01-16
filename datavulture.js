@@ -22,6 +22,7 @@ for(var j = 0; j < subQueries.length; j++){
 //read credentials
 fs.readFile("tokens.txt", "UTF-8", ((err, data) => {
     if(err){
+      console.log("Could not read credentials file! (tokens.txt in root directory)")
         throw err
     }
     var result = JSON.parse(data)
