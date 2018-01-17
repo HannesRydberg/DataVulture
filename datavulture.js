@@ -70,17 +70,22 @@ var startClient = (credentials) => {
               coordinates = coordinateAVG([Number(pointA[0]), Number(pointA[1])],
                 [Number(pointB[0]), Number(pointB[1])])
             }
-
-            db.run("INSERT INTO tweet_info VALUES ('"
-            + JSON.stringify(tweet.id) + "','"
+            var values = "'" + JSON.stringify(tweet.id) + "','"
             + subQueries[i] + "','"
             + coordinates[0] + "','"
             + coordinates[1] + "','"
-            + JSON.stringify(tweet.place.full_name) + "','"
-            + JSON.stringify(tweet.place.country) + "','"
-            + Date.now() + "','" 
-            + text +"'"
-            +" )", ((err) => {
+
+            if(tweet.coordinates){
+              values += "none','none','"
+            } else {
+              values += JSON.stringify(tweet.place.full_name) + "','"
+                + JSON.stringify(tweet.place.country) + "','"
+            }
+
+            values += Date.now() + "','" 
+              + text +"'"
+
+            db.run("INSERT INTO tweet_info VALUES (" + values + " )", ((err) => {
               if(err){
                 console.log(err)
               }
@@ -89,8 +94,10 @@ var startClient = (credentials) => {
             console.log(":::Search Query hit: " + subQueries[i])
             console.log("ID: " + JSON.stringify(tweet.id))
             console.log("Coordinates: " + JSON.stringify(coordinates))
-            console.log("Place: " + JSON.stringify(tweet.place.full_name))
-            console.log("Country: " + JSON.stringify(tweet.place.country))
+            if(!tweet.coordinates){
+              console.log("Place: " + JSON.stringify(tweet.place.full_name))
+              console.log("Country: " + JSON.stringify(tweet.place.country))
+            }
             console.log("Time: " + Date.now()) 
             console.log("Text: " + tweet.text)
             console.log("------------------------------")
