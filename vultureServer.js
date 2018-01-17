@@ -14,15 +14,25 @@ app.get('/', (req, res, next) => {
 })
 
 app.get('/JSON/:searchTerm', (req, res, next) => {
-
-    db.serialize( () => {
-        db.all("SELECT * FROM tweet_info WHERE query='" + req.params.searchTerm + "'" , (err, data) => {
-            res.send(JSON.stringify(data))
-            console.log("Request for " + req.params.searchTerm + " from " + req.connection.remoteAddress)
+    if(req.params.searchTerm === '*'){
+        db.serialize( () => {
+            db.all("SELECT * FROM tweet_info" , (err, data) => {
+                res.send(JSON.stringify(data))
+                console.log("Request for " + req.params.searchTerm + " from " + req.connection.remoteAddress)
+            })
         })
-    })
+    } else {
+        db.serialize( () => {
+            db.all("SELECT * FROM tweet_info WHERE query='" + req.params.searchTerm + "'" , (err, data) => {
+                res.send(JSON.stringify(data))
+                console.log("Request for " + req.params.searchTerm + " from " + req.connection.remoteAddress)
+            })
+        })
+    }
+
 })
 app.use(express.static('public'))
+app.use(express.static('vendor'))
 
 var server = app.listen(3000, () => {
     var host = server.address().address;
