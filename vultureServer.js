@@ -5,6 +5,9 @@ var sqlite3 = require('sqlite3')
 var db = new sqlite3.Database('vultureNest.db')
 var app = express()
 
+app.use(express.static('public'))
+app.use(express.static('vendor'))
+
 app.get('/test', (req, res, next) => {
     res.send("testing testing")
 })
@@ -13,26 +16,29 @@ app.get('/', (req, res, next) => {
     res.sendFile(__dirname + "/index.html")
 })
 
-app.get('/JSON/:searchTerm', (req, res, next) => {
-    if(req.params.searchTerm === '*'){
-        db.serialize( () => {
+app.get('/JSON/tweets/:searchTerm', (req, res, next) => {   
+    db.serialize( () => {
+        if(req.params.searchTerm === '*'){
             db.all("SELECT * FROM tweet_info" , (err, data) => {
                 res.send(JSON.stringify(data))
                 console.log("Request for " + req.params.searchTerm + " from " + req.connection.remoteAddress)
             })
-        })
-    } else {
-        db.serialize( () => {
+        }else {
             db.all("SELECT * FROM tweet_info WHERE query='" + req.params.searchTerm + "'" , (err, data) => {
                 res.send(JSON.stringify(data))
                 console.log("Request for " + req.params.searchTerm + " from " + req.connection.remoteAddress)
             })
-        })
-    }
-
+        }
+    })    
 })
-app.use(express.static('public'))
-app.use(express.static('vendor'))
+
+app.get('/JSON/queryList', (req, res, next) => {
+    db.serialize(() => {
+        db.all('SELECT DISTINCT query FROM tweet_info', (err, data) => {
+            res.send(JSON.stringify(data))
+        })
+    })
+})
 
 var server = app.listen(3000, () => {
     var host = server.address().address;

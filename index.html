@@ -15,7 +15,10 @@
                 <p>Search query:</p>
                 <input id="filter-query" >
                 <button type="button" id="filter-button">Search</button>
-                <p>Filtering on: <span id="filtering-on"></span></p>
+                <p id="filtering-on">No Filter, showing all tweets</p>
+                <select id="filter-select">
+                    <option></option>
+                </select>
         </div>
         <div id="map"></div>
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBE4wTf6D4qCmR9V2TskDRSA04FVGt4T4w&libraries=visualization&callback=initMap"></script>

@@ -16,7 +16,7 @@ var initHeatmap = (searchquery) => {
     }
     var heatmapData = []
     var json;
-    $.get("http://localhost:3000/JSON/" + searchquery, (data) => {
+    $.get("http://localhost:3000/JSON/tweets/" + searchquery, (data) => {
         json = JSON.parse(data)
         $.each(json, (index, tweet) => {
             //console.log(tweet.longitude, ",", tweet.latitude)
@@ -40,16 +40,39 @@ var clearLayers = () => {
     activeLayers.length = 0;
 }
 
+var changeHeatmap = (query) => {
+    clearLayers()
+    initHeatmap(query)
+    if(query === ""){
+        $("#filtering-on").text("No Filter, showing all tweets")
+    }else {
+        $("#filtering-on").text("Filtering on: " + query)
+    }
+}
+
 $(document).ready(() => {
+
     $("#filter-button").click(() => {
-        clearLayers()
-        initHeatmap($("#filter-query").val())
-        $("#filtering-on").text(($("#filter-query").val()))
+        changeHeatmap($("#filter-query").val())      
     })
 
     $("#filter-query").keyup((event) => {
         if(event.keyCode === 13){
             $("#filter-button").click()
         }
+    })
+
+    $("#filter-select").change(() => {
+        changeHeatmap($("#filter-select :selected").text())
+    })
+
+    $.get("http://localhost:3000/JSON/queryList", (data) => {
+        var queries = JSON.parse(data)
+        $.each(queries, (index, query) => {
+            $("#filter-select")
+                .append($("<option></option>")
+                .attr("value", index)
+                .text(query.query))
+        })
     })
 })
