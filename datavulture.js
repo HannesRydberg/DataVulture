@@ -62,6 +62,8 @@ var startClient = (credentials) => {
             var coordinates
             if(tweet.coordinates){
               coordinates = tweet.coordinates.coordinates
+            }else if(!tweet.place.bounding_box.coordinates[0]){
+            console.log(JSON.stringify(tweet.place))
             }else{
               coordinates = tweet.place.bounding_box.coordinates[0]
               var pointA = coordinates[0].toString().split(",")
